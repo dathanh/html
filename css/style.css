@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, 'Trebuchet MS', Futura, sans-serif;
+}
+
+header div.banner {
+    background-color: #1abc9c;
+    color: #FFFFFF;
+    font-family: arial;
+    padding: 80px;
+    text-align: center;
+}
+
+div.banner>h1 {
+    text-transform: capitalize;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 40px;
+    padding-bottom: 20px;
+}
+
+nav {
+    background-color: #333333;
+}
+
+nav:after {
+    clear: both;
+    content: '';
+    display: table;
+    visibility: hidden;
+}
+
+nav>a {
+    float: left;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    color: #FFFFFF;
+    padding: 15px;
+}
+
+nav>a:last-child {
+    float: right;
+}
+
+nav>a:hover {
+    background-color: #F1ECEC;
+    color: #000;
+}
+
+div.container {
+    display: flex;
+}
+
+div.sidebar {
+    flex: 30%;
+    background-color: #f1f1f1;
+    padding: 20px;
+}
+
+div.content {
+    flex: 70%;
+}
+
+div.sidebar>section {
+    margin-bottom: 10px;
+}
+
+div.sidebar>section>h2 {
+    padding: 20px;
+    text-transform: capitalize;
+}
+
+div.sidebar>section>a {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+div.gallery>a {
+    display: block;
+    padding: 20px;
+    background-color: #BFBFBF;
+    margin-top: 10px;
+}
+
+.fakeimg {
+    background-color: #aaa;
+    width: 100%;
+    padding: 20px;
+}
+
+div.content>section>h2 {
+    text-transform: uppercase;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+div.content>section {
+    margin-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+div.content>section>a {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 700px) {
+    .container {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .container {
+        flex-direction: column;
+    }
+}
+
+footer {
+    background-color: #DAD6D6;
+    padding: 25px;
+    font-size: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
