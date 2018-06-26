@@ -1,0 +1,20 @@
+﻿getElementById('');
+innerHTML='';
+writer('')= clear all exist element in HTML and show value in quotes( using in test);
+window.alert('') = show alert
+{Number} + {string} = {string}
+variable, which is declared without assign value ,is assigned 'undefine' , ex: var test ;
+typeof : return type of variable;
+instanceof :  	Returns true if an object is an instance of an object type
+**: exponentiation ex 10**2 same as 10^2=100(The **= operator is an experimental part of the ECMAScript 2016 proposal (ES7). It is not stable across browsers. Do not use it.)
+in :property in object. Ex:Pi of Math
+instanceof: instance(thành phần) of object .Ex:instance of array  
+****[Accessing a function without () will return the function definition instead of the function result:]
+length: length of string
+indexOf('',{the starting position for the search}): find string in another string - if resuilt is (-1), string isn't found,else return position of find string, find asc
+lastIndexOf('',{the starting position for the search}): same as indexOf() but find desc 
+search(): method searches a string for a specified value and returns the position of the match,
+    The search() method cannot take a second start position argument.
+    The indexOf() method cannot take powerful search values (regular expressions).
+****[Formally said: Strings are immutable: Strings cannot be changed, only replaced. ]
+new Date( year, month, day, hour, minute, second)

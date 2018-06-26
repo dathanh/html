@@ -1,0 +1,14 @@
+﻿concatenation: nối lại
+Arithmetic : số học
+operands : toán hạng
+operater: toán tử
+Precedence: ưu tiên
+parentheses :ngoặc đơn
+Exponentiation : luỹ thừa
+comma:dấu phẩy
+semicolon:dâu chấm phẩy
+Subroutine:chương trinh
+primitive :nguyên thuỷ
+explicit: rõ ràng
+omit:bỏ qua
+snippet :trích dẫn

@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+nav div {
+    overflow: hidden;
+    background-color: #000;
+}
+
+nav>div.desktop-menu>a {
+    display: block;
+    padding: 15px;
+    float: left;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    text-transform: capitalize;
+    background-color: #0F0E0E;
+}
+
+a.search {
+    float: right;
+}
+
+div.dropdown-content {
+    display: none;
+}
