@@ -12,3 +12,4 @@ primitive :nguyên thuỷ
 explicit: rõ ràng
 omit:bỏ qua
 snippet :trích dẫn
+scenario:kịch bản

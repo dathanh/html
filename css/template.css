@@ -2,9 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-nav div {
+nav div.desktop-menu {
     overflow: hidden;
     background-color: #000;
 }
@@ -15,15 +16,39 @@ nav>div.desktop-menu>a {
     float: left;
     text-decoration: none;
     color: #fff;
-    font-weight: bold;
-    text-transform: capitalize;
+    text-transform: uppercase;
     background-color: #0F0E0E;
 }
 
-a.search {
+nav>div.desktop-menu>a.search {
     float: right;
 }
 
 div.dropdown-content {
     display: none;
+}
+
+div.mobile-menu {
+    display: none;
+}
+
+div.banner {
+    position: relative;
+}
+
+div.banner>section {
+    display: table;
+    overflow: hidden;
+}
+
+div.banner>section h4,
+p {
+    color: #3E7BE0;
+    text-align: center;
+    position: absolute;
+    bottom: 8px;
+}
+
+div.banner>section>img {
+    width: 100%;
 }

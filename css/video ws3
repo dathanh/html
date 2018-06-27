@@ -1,0 +1,1133 @@
+ well we hope you're enjoying your
+reinvent(tái tạo) so far my name is Justin pearl
+and I'm Vladimir Buddha love and thank
+you for joining us today by show of
+hands how many of you are working on
+apps where users need to sign in and
+sign up so 95 plus percent okay and of
+those apps how many of your users do you
+need to have different permissions in
+your apps for different users okay so
+the majority(đa số) be as well well today we're
+here to share best practices and tips on
+how you can accomplish these goals in a
+secure and serverless wait this talk is
+modeled after a talk from reinvent(tái tạo) 2016
+but many change many services and
+features have changed since then so if
+some of this content looks familiar to
+you realize there's a lot of new stuff
+we'll be demoing and talking about today
+as well to make this real what we've
+done is to walk from a perspective of
+building an app in this case a hybrid
+mobile app using JavaScript SDKs behind
+the scenes from start to finish of you
+know starting with sign up and other
+concerns as we go and this app and all
+the demos you see today are available
+for use now on github at eight abuse
+labs and we'll have this again for any
+photos at the end but just know do try
+this at home
+all of the source code of all that you
+see is available for your use to
+accelerate your development under the
+Apache 2 license just so you know space
+Finder is a conference room finder
+application so a simple app to find a
+conference room book a conference room
+etc so you'll see how the identity
+concern plays throughout and to talk you
+through more about how we approach
+identity alternative Lattimore so
+imagine you're sitting at your desk
+drinking a cup of coffee waiting for the
+work week to start and an email pops up
+you have to create a mobile application
+that allows users to sign up and sign in
+upload their profile image and search
+and book conference rooms well what do
+you do where do you start
+well since identities or managing
+identities
+is an integral part to most of these
+components you should start there well
+you want the user to sign up and sign in
+how do we do that you might roll up a
+database and store the credentials how
+do you store the credentials maybe in
+clear text format now how many of you
+know of a system that does this right
+now production just one I'm glad it's
+just one it's a definite anti-pattern
+for obvious reasons one of them is you
+can have a rogue employee go and scan
+the whole database and you have a huge
+problem on your hands well you can hash
+passwords it used to be really common
+just to hash passwords and save those
+hash passwords in the database but with
+rainbow tables and with dictionary
+attacks
+you're not safe anymore what's a better
+approach a better approach is to sold
+hash those passwords and that's actually
+what's being used quite often these days
+now what if you did not want to transfer
+the password over the wire even in a
+soul that hash format what if you didn't
+even want to save the password in the
+database what can you do well you can
+use secure remote password protocol
+which was developed at Stanford and what
+that is
+it allows you to create a verifier code
+from the password and transfer that and
+save that in the backend well now that
+we've settled on how you're gonna
+actually take care of the passwords what
+about the other requirements such as
+multi-factor authentication how about
+enforcing password policies or
+encrypting data on the back end and what
+about you know other authentication flow
+such as let's say including
+capture for example and what if all of a
+sudden this application becomes so
+popular that you want to scale it out to
+hundreds of millions of users on top of
+that what about the user flows on top of
+sign up and signing you want to be able
+to have the functionality to reset a
+password or change your password
+obviously sign out well thankfully we
+have a service for you and it's called
+Amazon Casino specifically Amazon
+cognero user pools which is a managed
+user directory and Justin will go over
+the actual process of sign up and sign
+in using Amazon kognito thanks Vlad Amir
+so to walk you through how you can use
+kognito user pools let's take a look
+that the common flows with our SDK so it
+all starts of course with sending the
+users information for registration and
+then you can optionally set up the
+requirements to validate either a
+customer's email or their phone number
+via SMS you know as a validation built
+into the service and then from there
+once they've actually taken the code
+that they got back via email our SMS and
+confirm their registration only then do
+you have a successful confirmed user
+which can actually authenticate so once
+the user goes to authenticate this is
+done via secure remote password or SRP
+as volodymyr said when you authenticate
+in send correct credentials Cognito user
+pulls returns to you a set of JWT tokens
+or JSON web tokens well talk more about
+those if you're not familiar but what if
+you have other needs you know beyond
+this basic flow if you need to hook in
+and customize this authentication and
+signup experience well you can heavily
+customize this flow so you could first
+authenticate just like before but say
+you need maybe a CAPTCHA or you want to
+do multi-factor off using a very
+particular multi-factor often Cognito
+has it out of the box so you need
+something else well you can define a
+custom challenge which is a lambda
+trigger that you can hook into the
+workflow that could generate that
+challenge for your users and send the
+challenge back and then your users can
+risk
+to the challenge in your own app sending
+the challenge response back with yet
+another lambda function to verify the
+challenge response now once they pass
+the challenges then of course you get
+the JWT tokens back just as before but
+this is just one example of how you
+could customize your user experience to
+show you a more comprehensive list
+here's a full view of a lot of the lamda
+triggers that you can hook in from the
+signup moment all the way through your
+post authentication logic to customize
+your flows now I know I mentioned you're
+getting back JWT tokens so for those
+that aren't familiar let's take a look
+at what a JWT token is so a JWT token
+has a header a payload and a signature
+and all three together as a base64 blob
+of text encoded blob of text make up a
+JWT token so this is an example of an
+identity token so if you look at the
+payload all of the users attributes that
+the app client has access to read or
+encode it in this token so my email my
+first name my last name unique ID etc
+the header indicates the key used to
+sign the token and the signing algorithm
+and the signature is there to validate
+that this token is in fact from the
+source that you expect it to be from in
+this case a particular user pool with an
+amazon camino now with with this token
+there are three types of tokens you get
+from Amazon kognito an access token an
+identity token and a refresh token the
+access token is there to provide access
+or programmatic sort of API interactions
+for the user the identity token what
+you're seeing here can be used for
+downstream sort of pseudo authentication
+or you know used for downstream sort of
+reading of the claims of the user and
+being able to dynamically change the
+experience of the user in your
+application just reading the token and
+the final one is something called the
+refresh token and the reason this exists
+is the access token an identity token
+from Cognito are only good for one hour
+now when they're issued but a refresh
+token can be customized for application
+to be valid for as long as 30 days
+and you can use a refresh token to get a
+new access and identity token and all of
+that is possible if you leave a long
+refresh token without the user needing
+to authenticate again so now we have a
+way you know building up our space
+finder application that a user can sign
+in and sign up but what if they need to
+access AWS resources so in our case each
+user has their own profile they want to
+have a profile picture we want to take
+advantage of Amazon s3 for that well to
+give them secure fine-grained access to
+Amazon s3 we need something else and
+there's another feature of Amazon cogito
+called Cognito federated identities and
+what this service does is it allows you
+to exchange tokens from user pools or
+another bearer token based provider for
+AWS native Prudential's in the form of
+an identity and access management or I
+am role so these credentials you know or
+an access key secret access key and a
+session token let's take a look at how
+that works behind the scenes so first
+you would authenticate with cognitive
+user pools you get back your set of JWT
+tokens just as before but this time you
+would make a subsequent call to go ahead
+and pass the identity token to cognitive
+federated identities which would return
+you and I did any ID
+now with the identity ID and the
+identity token you can then call to make
+a get recruit n choose R ik West which
+behind the scenes
+kognito goes to the security token
+service or STS service which is AWS is
+token vending machine effectively so all
+AWS access keys you ever see come from
+STS and this generates the particular
+credentials for that role and ultimately
+Cognito returns them back to you in the
+form of an iamb role so that's the
+access key secret access key session
+token once you have those credentials
+you can then go ahead and use any AWS
+SDK for any language you normally use to
+interact with AWS resources so in this
+case s3 but that could be DynamoDB api
+gateway or some other service but a lot
+of you said
+you have different users that need
+different permissions in your
+application so how can you solve that
+challenge well prior to December of 2016
+kognito federated identities only had an
+authenticated user role in an
+unauthenticated user role but in our
+case we want to have different users
+with different permissions now there are
+two additional options available for you
+for fine-grained access and
+authorization called choose role from
+rule and choose role from token the
+first one
+choose roll from rule in your user pool
+you can define different attributes in
+this case we have a user pull with the
+Department attribute and you can make a
+set of rules on based on these
+attributes so in this case we're parsing
+the department and if someone as a
+member of say the engineering department
+we give them the engineers role but you
+can define one or more rules that are
+processed in sequential order and the
+first matching rule would be the
+effective role that the user gets now if
+you have a user that comes along that
+doesn't match any of your rules that you
+define then you can decide do you give
+them the standard authenticated user
+role or do you just an either access all
+together with federated identities so
+that's one option the other option
+available to you
+is something called choose role from
+token and this is particular for use
+with Cognito user pools where we have a
+new feature also launched last year
+called kognito groups and you're able to
+define different groups for different
+users a user can be in more than one
+group so with each group you can specify
+an iamb role for each group and a
+precedence values and what that means is
+if in this case we have an example user
+here who's both an admin and in the
+finance department but because the admin
+group has a precedence of zero which is
+lower than the Finance precedence of to
+this user would get the I am role of the
+admin group you can only have one iron
+role at a time so this is another option
+for you that's all out-of-the-box and
+all of the the logic of deciding which
+role and issuing the appropriate tokens
+for that role all of that's done by
+Cognito for you so you make the same
+calls either way and it's this dynamic
+so to show this to you
+practice alternative lad Amir show you
+that so there's a lot of moving
+components here and in order to showcase
+most of them we created the application
+and we created a lot of one second we
+created a lot of logs so here you will
+see a lot of those logs printed out as I
+interact with the application so let's
+start by signing up let me enter the
+username password
+okay so what's going to happen now is
+I'm gonna click Sign Up and kognito will
+sign me up
+but I'm not confirmed yet what's going
+to happen is Chimaera will send a
+confirmation email to my email address
+with a code so let's take a look
+all right so I got the code now I have
+to confirm my registration all right
+I'm confirmed all right now let's login
+saying in fact a username the password
+is the same all right so as you can see
+there's a lot of information printed out
+here so things to note the three jwg
+tokens that I mentioned before are
+printed out here and they access
+credentials that Amazon cognero
+federated identities have ended so let's
+take a look at one of these JWT tokens
+specifically the ID token that's
+deciphered all right so you can see the
+header the payload and the payload
+contains all the information that I
+entered so you can use this JWT token in
+your downstream services for further
+customization and further authorization
+and you have the signature the signature
+you will use in your downstream services
+to make sure that this is a valid
+jwg token you want to make sure that
+cognero
+was the one who created it all right now
+let's take a look at the one thing that
+I wanted to show you one additional
+thing it is uploading an image first so
+let's go here select an image we have a
+couple of pictures here all right so
+we've uploaded an image just now and
+what happened is the image went directly
+from this mobile device to s3 it did not
+go through a server it did not need a
+proxy it went directly to s3 so that was
+possible using I am roles and it's
+stored in a s3 bucket that only this
+user
+access to meaning they asked three
+buckets prefix only this user has access
+to the image that was just uploaded no
+other user can access it alright so
+let's take a look at the middle console
+alright so first let's start with user
+pools the first thing that you see is
+the pool idiom that's the unique ID that
+you will be referencing throughout your
+application now yeah a dashboard of
+everything that's configured and as an
+example estimated number of users that's
+in this container user pool now the
+second thing I want to show you are the
+actual users and groups so these are the
+users that have logged in or registered
+with this cog near a user poll and these
+are the groups that Justin mentioned and
+let's take a look at one of them so as
+you can see this group is associated
+with a particular I am role so what that
+means is if I place a user into this
+group that user went authenticated will
+have that role as part of that token all
+right the attributes cognero comes with
+default attributes and you can also
+create custom attributes so think of
+custom attributes as what's your
+favorite color or has the user paid as
+an example and it's important due to the
+fact that in order to actually talk to
+cognero you need an app ID as well so
+here we have configured to app IDs one
+is the admin ID and the other one is the
+ID that's being used by this cognero
+application right so as a client so the
+client one is configured to use SRP and
+one very important thing to note is
+we're actually telling what attributes
+this client has access to in regards to
+reading and regards to writing so
+imagine the following situation you have
+the client accessing and writing let's
+say the color or my favorite color for
+example right but you don't want the
+client to have access to an attribute
+that specify whether the client has paid
+for a subscription or for a conference
+room for example you don't want the
+actual client to modify this value you
+want and admitting to modify this value
+and this is where that's setup we've
+turned off srp here and the admin
+application has access to all of the
+attributes including these three all
+right now the next thing to note are the
+triggers so this is a way for you to
+customize the authentication and the
+authorization flows and Justin went over
+this a little bit more these are just
+simple lambda functions that you can use
+and we have plenty of reference lambda
+functions for this you can also turn on
+analytics which basically turns on pin
+point all right so let's take a look at
+the federated identities so just to
+remind you cognero user pools is your
+user directory it stores the users it
+allows for an easy way to create the
+signup and sign-in functionality kaguro
+federated identities is what allows
+those users who have logged in with
+Koerner a user pools to get AWS
+credentials so you exchange jawge tokens
+for AWS credentials and that's the way
+that those users inadvertently through
+the application are able to access the
+AWS services such as s3 api gateway and
+anything else so let's take a look at
+the pool
+okay so what you see here is a list of
+available providers or type of providers
+that you can integrate within this
+within federated identities what that
+means is you can use cognero to allow
+your users to sign up and sign in but
+you can also use Facebook or Twitter or
+open ID provider or any sam'l provider
+and if you have that all packaged in
+your UI and let's say the same user logs
+in with cognero
+and then later that same user decides to
+log in with Facebook they have the same
+federated identity so you can identify
+that user within the login process okay
+now as you can see here the setup is
+quite simple you specify the user pool
+ID you specify the app client ID and you
+specify the fine-grained controls here
+in here and just to show you quickly
+Facebook Google Twitter okay all right
+so you've allowed your users to sign up
+and sign in you've used federated
+identities to allow your users to upload
+their profile image so now you're ready
+for the business logic and for the
+business logic you can use API gateway
+lambda and DynamoDB and Justin we'll go
+over the details of how that's
+implemented and set up thanks Lambie so
+with our space finder application we'd
+like to have a fully serverless
+application right so the serverless api
+pattern is very popular in common is api
+gateway AWS lambda and Amazon DynamoDB
+and so we have that in space finder so
+when the nice thing about API gateway
+being in this mix is you're able to
+offload all of the authorization and
+authentication decisions for your actual
+business layer to API gateway
+and the way we can do that is three
+different types of authorization options
+first I want to show you just to set the
+context this is space finders API it's a
+simple restful api but within this api
+we do have certain operations that are
+admin only operations so as you can see
+here so we want certain users and our
+user poll to be able to do these in
+certain users not to be able to do these
+things to make it real
+what these are in a conference room app
+like space finder anyone could book a
+room or delete their own booking but
+creating a room itself or creating a
+building with rooms in them is something
+only an admin should be able to do as
+well as deleting buildings and rooms so
+that's what you know we're trying to
+accomplish I mentioned there are three
+types of authorization so let's take a
+closer look at each but one other thing
+you should might want to note is even if
+you're not using a fully serverless
+stack today you can put api gateway in
+front of any existing application you
+know that where you can where you have
+an api and leverage this not just in a
+serverless environment and still offload
+your authorization challenges logging
+DDoS prevention and other things so but
+the first one is Cognito user pool
+authorizers so with this if you have
+users that are using kognito user pools
+the way this works is you first have
+those users authenticate with user pools
+and get back a set of JWT tokens and
+then you take the identity token and you
+send the identity token to api gateway
+in the header of your choice with your
+request so most likely the authorization
+header api gateway can then read the
+token actually check its signature and
+check if the token is still valid since
+an identity token is only good for one
+hour and if it is valid then and only
+then would we go ahead and invoke the
+lambda function behind api gateway which
+then would use its I am execution roll
+so an I am role specific to each lambda
+function that allows it to talk to other
+AWS resources so in this case Amazon
+DynamoDB
+so that's a user Paul's authorizer
+keeping here it's just going to check of
+a user as a valid user in your pool
+it's not going to be able to
+differentiate our standard users and our
+admin users so so for that kind of
+fine-grained authorization we have two
+other options the first option is
+something called AWS I am based
+authorization so with I am based
+authorization you would first
+authenticate with Cognito user pools you
+get back your JWT tokens you then go
+ahead and you get an I am role as
+Vladimir showed you so you request your
+creds
+you get back you know behind the scenes
+the validation cog Nino takes care of
+all of that for you and you get back
+your temporary AWS credentials and then
+once you have those you're able to send
+your request to api gateway signing it
+with a process called signature v4 or
+sigdi 4 which is our signing algorithm
+this is the same request signing process
+used for all AWS api's so whether you
+talk to s3 or something else and API
+gateway is able to extract from the
+signature which role signed at this
+request and for that role check which
+policies the role is associated with and
+then based on those policies actually
+see if the user is allowed to invoke the
+operation requested it would then go
+ahead and invoke lamda just as before
+which then uses its role to talk to
+dynamo dB
+so I mentioned the policies you know how
+might that look well here's an example
+of a very simple I am policy for your
+reference so you can see in this policy
+you know the the key action here to note
+is something called execute API invoke
+and in this policy we're allowing our
+users to allow them to access any
+operation in the API with the exception
+of post operations on our locations path
+and sub paths so this you know and in
+real life as a best practice rather than
+doing this kind of blacklist approach of
+denying certain things you'd want a
+whitelist only the things you your users
+need as API is dynamically change over
+time and you might not update the policy
+but denies always take precedence and I
+am so the user is effectively
+you know disallowed from certain things
+here so the final option is something
+called a custom authorizer so cuff em
+authorizers are implemented via lambda
+functions and here's how they work
+first you authenticate with your
+identity provider of choice so that one
+difference here you don't have to use
+COG you know at all to you leverage this
+feature of API gateway as long as you
+have an identity provider that can
+provide a bearer token for you of
+whatever format you can then take that
+token and get that back from the
+provider then send that token to api
+gateway in your request in the header of
+your choice api gateway checks its own
+local cache to see for that token if we
+have a known valid policy for the user
+an effective you know policy define the
+IAM for them and if it doesn't know who
+they are then it invokes the lambda
+function which is your custom authorizer
+lambda function which can run the
+business logic of your choice talk to
+any third-party service or ID ID
+provider you may have to validate the
+user and determine what access they
+should have ultimately sending back a
+well-formed I am policy back to the user
+so once this is back you know with API
+gateway we check the I in policy that we
+were got back to see if they have access
+for the operation they've requested
+assuming they do invoke lambda just as
+before which then accesses dinamo now
+the key thing to note here upon the
+second request of the same user to our
+API we wouldn't we would have that
+policy cached locally for that
+particular token and we wouldn't need to
+invoke our lambda function we can
+immediately make a decision around if
+they have access or not and you
+configure the validity and the timing of
+how long that cache is good for by
+default it's five minutes so so I know
+when I first heard this I thought well
+custom authorizers I need a lambda
+function to generate an iamb policy
+that's well-formed how would I go about
+that we have a lambda function blueprint
+out there today if you go to the lambda
+console and search for
+authorizer both python and javascript
+where you can see a sample of here all
+you have to do is say allow method deny
+method provide the operations you want
+to allow deny the operations you don't
+want to allow and then ultimately do a
+callback
+so my first very simple custom
+authorizer i was able to get working in
+under 10 minutes using the blueprints
+that we offer so in summary we have
+three types of authorization with api
+gateway user pro authorizers for users
+of user pools that need simple sort of
+valid user yes/no authorization I am
+based authorization for fine-grained
+access via I am policies and kognito
+federated identities and then finally
+custom authorizers which are the most
+flexible and providing you with you know
+effectively any identity provider and
+being able to generate a policy on the
+fly for them specific to that user up to
+three the most secure is I am based
+authorization and the reason for that is
+because every request is uniquely signed
+and with the others if I were able to
+intercept a request
+even though TLS is required with API
+gateway and if I were able to read the
+header and get that token for the
+duration of the validity of that token I
+could make you know impersonated
+requests to the to API gateway and be
+able to do things but with request
+signing via I am every request signature
+is unique including the payload of the
+request the operation of the request the
+path of the request etc so even if
+someone got my signature it would be
+invalid and useless to them upon their
+next call so it is the most secure
+whenever possible and to make that
+process easier of even signing the
+request to api gateway api gateway
+itself can generate SDKs in mobile and
+web languages that have the signing
+library already built in so you don't
+have to go and implement all that
+signing code yourself so to make this
+more concrete let's show you how space
+finder uses these features
+so first I'll show you space finders API
+so it's a simple restful api in all the
+paths here like you saw and each given
+operation under a resource you're able
+to define particular off details for the
+request so when I go to say the list two
+locations method ok show me all the
+buildings this particular request I'm
+requiring authorization but I can pick
+by operation in the API what type of
+authorization I want to require so this
+one's using a user pull authorizer for
+demonstration purposes space finder uses
+all three but in practice you would want
+to stick with one type of authorization
+for simplicity on your partner and
+customer sides integration with your API
+so that's an example there another thing
+to look at here we can define our
+authorizers so we have our user Pro
+authorizer
+our custom authorized are defined and we
+can actually take a token so let me go
+pull a valid token so this is Vladimir's
+account he just signed up with and I can
+use the tester to show you passing in
+that token with the custom authorizer
+that that request gave us something
+similar to the sample we saw so we've
+allowed him access to anything with the
+exception of denying deleting and
+posting on the locations paths and sub
+paths so deleting a room creating a room
+etc so that's an example of you know
+custom authorizer that logic just ran
+dynamically right then so show you in
+the app let's go over to the app again
+and I'm signed in right now as a user so
+if I go and I for instance if I try and
+call that same request that lists
+locations without passing any off header
+you can see I immediately get a 401
+response an error response which says
+your unauthenticated if I try the same
+request again and this time what we're
+doing here we're showing you the details
+of the request just to make it more
+clear what's going on
+but this time I'm sending an
+authorization header which is my
+identity token then you can see all of
+the buildings have loaded as we'd expect
+so I hear there's an event and aria
+today so let's let's pull up this
+building and you can see now we're
+actually using an IM based get request
+for authorization
+so with IM authorization unlike the
+first type of requests we're sending
+several headers here so we have an
+authorization header itself which has
+multiple parts and then we're also
+sending an X Amazon date header and an X
+Amazon security token headers these
+three together make up that signature
+I'm talking about with AWS signature v4
+signing but it was a valid signature we
+have authorization on this resource
+hence our buildings loaded so let's go
+ahead now and say you know Ironwood this
+is another I am request it loads is fine
+and now when I go to book the resource
+we use the I am authorization here as
+well but on this post the thing to note
+all of this payload information is also
+part of the signature so if someone were
+to call the same endpoint again same
+operation tamper with the payload the
+signature would be invalid now if I go
+to bookings you can see I have my
+booking but let's say even though this
+is not an admin user I'm going to turn
+on our admin UI to try and call some
+admin things and so for instance let's
+go in and try and add a location and
+I'll say test location right and I try
+and call this and you can see because
+I'm not an admin my I am policy did not
+allow me to actually do this post
+request even though I am authenticated
+with I am and authorize but I got a 403
+response which means I know who you are
+but you're not authorized to do what
+you're asking so let's go ahead and sign
+out now and sign in and say an admin
+user
+so if I sign it again
+same exact process but you can see our
+UI is dynamically reading our token to
+change our experience here and you can
+look in the actual identity token we've
+decoded it here for you and you can see
+because I'm in that admin group that I
+get you know if my group is admin group
+right I'm in one group and that admin
+groups role was this particular I and
+role that allows access to anything on
+the API and then if I had multiple roles
+that might apply to me there here but
+that choose role from token option that
+we looked at its parsing this preferred
+role attribute which is generated
+dynamically by Cognito so now that we're
+authenticated properly let's try this
+again and this time it succeeded and
+here we have our test location and then
+just to show you an example on the
+custom authorizer now we want to do a
+post on our resources underneath the
+location so for instance if I do this as
+an admin it also works so let's take
+this user and we'll see the difference
+so if I take this identity token back to
+our tester I run the test for our custom
+authorizer
+you can see I also got a policy back and
+this policy allows everything there's no
+deny state minh like our first user
+that's why we were able to create that
+resource with a custom authorizer orbit
+i am we've set it up for both so that's
+just to look at that's you know the
+different options available with api
+gateway authorization and now space
+finder functionally wise is complete
+right we can sign in and sign up you can
+access a two Bs resources and we have
+our own business logic necessary in our
+server list API but what if we want to
+allow users to federate their existing
+identity providers we're hearing
+customers asked more and more about
+identity Federation so I'll turn on a
+ladder mirror to discuss how that can be
+implemented
+well previously prior to earlier this
+year if you were using American Nero and
+you wanted to feather eight third-party
+providers what you would have to do is
+create the UI create all those buttons
+create all that UI logic and possibly
+the backend logic and you have to manage
+all of that functionality now we have
+released a feature called hosted UI so
+what that is is it allows you when a
+click of a button to create a UI which
+is highly customizable it allows for
+Federation with Facebook Google and
+Amazon and also with sam'l to providers
+and it's it supports Auto so basically
+it acts as your universal user directory
+not only that what happens when you use
+the hosted UI all those parameters and
+all those attributes that the
+third-party providers give you access to
+are copied over into the user pool so
+now in your application
+you only need to talk to cagney reusable
+rather than to any one of those
+providers that the user has logged in
+with so the flow is quite simple right
+you have the hosted UI presented to the
+user the user picks out what he wants to
+login with so in this case Amazon the
+user is redirected to Amazon's like in
+landing page enters his username and
+password Amazon takes care of the actual
+log in and the user is redirected to
+Amazon cagney reusables with all of
+those credentials that you saw
+previously and with additional
+credentials from Amazon as well so now
+within your application you have access
+to both and you can if you want to
+talk to Amazon directly with sam'l and
+at your enterprise IDPs the process is
+quite similar the user chooses which
+corporate IDP to login with user is
+redirected the corporate provider takes
+care of the actual login and you
+redirect it back to Amazon can be
+reusable so in order to demonstrate this
+justin will take takeover okay so we
+just mentioned you know the identity
+Federation features so let me go back
+the space finder yet again and this time
+let me sign out and if you notice we
+have an option at the top here we had
+we've been using our own custom
+application UI with kognito SDKs so far
+but there is another option available
+the hosted UI the vladimir mentioned so
+when I click that I'm on a mobile device
+so it pops up a new tab for me
+now this UI it we've turned on a few
+options but this is all out-of-the-box
+we haven't customized the styling in any
+way we haven't uploaded a logo or done
+anything which is heavily customizable
+as you'll see but from here we could
+sign in as our existing users you know
+with with a username and password but we
+can also Fedder a twith any of those
+providers and Cognito will take care of
+all of the behind-the-scenes magic to
+get everything in one place so having an
+endpoint that you can receive the post
+on from a similar response and mapping
+attributes etc so let's let's take a
+look at that so let me first sign in
+with Google see how I come to Google so
+let me actually have a new account here
+okay and now I'm for my account you just
+finished signing in
+so my signing was successful and if you
+noticed here comes the UI see here me
+anxiously is signing one more time so
+here comes our UI and you can see I'm
+signed in now because it's a mobile app
+especially if you were doing a sam'l
+response directly Sam only supports a
+redirect response or a post back to your
+client while on a mobile device you know
+neither is an easy option so Cognito
+actually intercepted that post response
+from the sam'l provider and provides us
+a standardized set of these jadibooti
+tokens that are always the same
+regardless of where you came from and
+then we get the callback actually from
+kognito itself to actually do this sign
+in so if you notice the applet Arcand
+popped up again it's because on a mobile
+device it used a deep linking callback
+so space finder colon slash slash
+callback was the actual path for for a
+web app we would just use a simple
+redirect callback so just to show you
+because it we did instantiate a new
+version of the app with our callback and
+switch over to that and you can see here
+the process was the same even though we
+came in through Google we've got the
+same JDBC tokens the same access token
+we have a different username here
+because we had a different ID but if I
+go around in the app and do anything you
+know it's all the same so everything is
+identical ear now let's sign out this
+time and let's do a sam'l provider so in
+this case we're showing octa here we've
+integrated octa which has a similar in
+point as a sample so let me sign him the
+doctor but this could be any sam'l 2.0
+compliant provider
+oops fix that
+and you can see I'm successfully signing
+with octa so here we go again and you
+can see my username because of Howard's
+using a map it is just my octa unique
+identifier which happens to be my email
+so it's prefixed by the user pool so
+let's look at this in the console so if
+we go back to the Cognito console we
+have two additional sections we haven't
+looked at so far which is app
+integration and Federation and in our
+app integration for this hosted UI you
+can customize your desired domain prefix
+for your domain and you're able to set
+per app client so we have our admin
+client here's our app client here
+the callback URLs that you want to
+support so here's our space finder
+callback you just saw and the desired
+identity providers that you want to
+enable for each app client as well as
+which flows you want to enable from an
+OAuth 2.0 perspective so we support off
+code and implicit grant etc now we're
+using the off code flow here so we've
+got an off code back then we need
+another request to Cognito which gave us
+those final JWT tokens with the implicit
+flow we would just get the JWT token
+directly in the callback and then of
+course you can define the different
+scopes so how would you set up you know
+the different identity providers well if
+we go here it's as simple as saying for
+the social providers say Facebook
+registering an application on Facebook's
+developer portal pasting in its ID and
+as your secret and the Scopes you want
+to allow and hitting enable and that
+would enable that Google is the same
+same app ID and secret is all we've got
+there for sam'l providers it's a bit
+different so sam'l providers if we look
+here to find octa you have a metadata
+document that you need to specify which
+all sam'l endpoints can provide you give
+it a name and then you can indicate
+something called the identifier and what
+the identifier does is if you have
+multiple sam'l provider x' you can give
+them a particular string to parse in a
+username so most likely this would be a
+domain name
+like amazon.com or something else and
+instead of having a button and said octa
+I would just say sign in with your
+corporate email and if I type in Justin
+at Amazon it would read the amazon.com
+part and it would send me to my
+amazon.com corporate sign-in page
+you know hosted by our sam'l service so
+you can have many different sam'l
+providers all with one UI and behind the
+scenes redirecting them and then the
+other part as Vladimir said we have a
+universal user directory so how can we
+get a consistent view of our users so if
+we go in here to Google Google provides
+all of these standard attributes for our
+users so I've mapped them into user pull
+attributes so most of these were just
+out-of-the-box user pull attributes like
+email a name but I've also set up a
+custom attribute for my access token
+from Google and when it expires so if
+you want to capture your access token
+from these other providers to be able to
+make calls on their behalf directly with
+Google or something else it's as simple
+as creating that attribute and then
+mapping this to it with sam'l providers
+it's much the same so here's a octa
+sam'l is soap based so you depends on
+the provider how this looks but you just
+have my different attributes and then I
+map them to the name so when I look at
+my users that have actually been in the
+pool you can see which ones have come in
+through standard username password sign
+up versus my federated external users
+but when I click into them the
+attributes of Cognito are the same so my
+given name is Justin last name email all
+of that's been mapped into one
+consistent schema and Universal user
+directory for all of my users and then
+the final thing to know as I mentioned
+our UI the hosted UI is very
+customizable you can get an ID here of
+all the different types of things you
+can customize from the styling of an
+error message to the label to the logo
+legal text and more
+so one final thing we're hearing from
+customers is how can they migrate to use
+some of these features if they're
+already using user pools so I'll
+terminate Wladimir to tell you about how
+that's possible there's actually a lot
+of ways of migrating now I'll talk about
+two of the ways so the first one is a
+bulk import you export users from your
+current users directory you create a CSV
+file from them and then you run an
+import job and repeat and then what's
+going to happen is you need to inform
+your users that they will have to reset
+that password so let's assume you don't
+want to you want a more seamless
+migration and you don't want your users
+to reset to have to reset our passwords
+what do you do well there's a one at a
+time migration what that is is you will
+have to tweak your UI a little bit to
+first try and authenticate the user with
+the COG near a user pool if the response
+that you get is the user does not exist
+then you would authenticate the user
+with the current directory and if the
+user exists and has successfully
+authenticated in the background you
+register the user with canary user pools
+and basically you will have to you know
+give it some time in order to allow your
+users to go through the flow at the end
+of the day some users will not use your
+application for example so you will
+still need to export those users and
+import them and that will need to reset
+their passwords afterwards so just to
+wrap up we've created a mobile
+application that allows your users to
+sign in to upload their profile images
+and to search for conferences and to
+book them but it doesn't have to be a
+mobile application can be a web
+application and this application is
+actually written using JavaScript so you
+can run it in your browser
+and this is the github repo we have a
+bunch of cognero reference architectures
+on AWS labs so please take a look at
+them and if you're interested in this
+session you might be interested in these
+related sessions as well please complete
+your evaluations and thank you for those
+for those interested we'll hang around
+for questions and then the Cognito team
+if you guys could stand up so they're
+back in that corner some of the
+cognitive engineers and folks are here
+feel free to ask any of us questions 
