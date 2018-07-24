@@ -73,9 +73,11 @@ div.top-content h5 {
     font-weight: lighter;
     color: grey;
     margin-bottom: 10px;
-    font-style: italic; 
+    font-style: italic;
 }
 
-div.top-content p{
-     text-align: justify;
+div.top-content p {
+    margin: auto;
+    text-align: justify;
+    width: 70%;
 }
