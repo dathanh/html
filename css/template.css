@@ -32,23 +32,50 @@ div.mobile-menu {
     display: none;
 }
 
-div.banner {
-    position: relative;
-}
+div.banner {}
 
 div.banner>section {
-    display: table;
-    overflow: hidden;
+    position: relative;
+    text-align: center;
+    color: white;
+    width: 100%;
+    /*display: none;*/
 }
 
-div.banner>section h4,
-p {
-    color: #3E7BE0;
-    text-align: center;
+div.banner>section>div.text-display {
     position: absolute;
-    bottom: 8px;
+    bottom: 5px;
+    text-align: center;
+    color: #fff;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 div.banner>section>img {
     width: 100%;
+}
+
+div.top-content {
+    text-align: center;
+}
+
+div.top-content h1 {
+    text-transform: capitalize;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 400;
+    padding: 5px, 5px;
+    margin: 10px;
+}
+
+div.top-content h5 {
+    font-family: Verdana, sans-serif;
+    font-size: 15px;
+    font-weight: lighter;
+    color: grey;
+    margin-bottom: 10px;
+    font-style: italic; 
+}
+
+div.top-content p{
+     text-align: justify;
 }

@@ -13,3 +13,6 @@ explicit: rõ ràng
 omit:bỏ qua
 snippet :trích dẫn
 scenario:kịch bản
+federate :liên kết
+Prerequisites: điều kiện tiên quyết
+proceed:tiến hành
