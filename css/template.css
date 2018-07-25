@@ -81,3 +81,254 @@ div.top-content p {
     text-align: justify;
     width: 70%;
 }
+
+div.bot-content {
+    display: flex;
+    margin: 15px;
+    justify-content: center;
+}
+
+@media screen and (max-width: 600px) {
+    div.bot-content {
+        flex-direction: column;
+    }
+}
+
+div.bot-content>section {
+    margin: 5px;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+div.sub-content {
+    text-align: center;
+    background-color: #000;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    color: #fff;
+}
+
+div.sub-content>h1 {
+    font-weight: lighter;
+    letter-spacing: 2px;
+}
+
+div.sub-content>h5 {
+    color: #D6D3D3;
+    font-style: italic;
+    font-weight: lighter;
+    margin: 30px auto;
+}
+
+div.date-table {
+    width: 95%;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+div.date-table>div.table-row {
+    border-bottom: 1px solid #D2CFCF;
+    color: #8F8F8F;
+    text-align: left;
+    padding: 6px;
+}
+
+div.date-table>div.table-row>p {
+    float: left;
+    display: inline-block;
+    padding-left: 20px;
+    margin: auto;
+}
+
+div.date-table>div.table-row>div.sold-out {
+    float: left;
+    display: inline-block;
+    vertical-align: middle;
+    background-color: #DD2929;
+    color: #fff;
+    margin: auto;
+    margin-left: 20px;
+    padding: 2px;
+}
+
+div.date-table>div.table-row>div.remainder {
+    float: right;
+    text-align: center;
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: auto;
+}
+
+div.date-table>div.table-row::after {
+    content: "";
+    clear: both;
+    display: table;
+    visibility: hidden;
+}
+
+div.ticket {
+    display: flex;
+    justify-content: center;
+}
+
+
+div.ticket>section {
+    width: 30%;
+    overflow-x: hidden;
+    margin: auto 2%;
+    text-align: left;
+    background-color: #fff;
+    color: #000;
+}
+
+div.ticket>section>.name,
+p,
+.btn-buy {
+    padding-left: 10px;
+    margin: 10px;
+}
+
+div.ticket>section>.date-time {
+    padding-left: 10px;
+    margin: 10px;
+    font-weight: lighter;
+    color: #8F8F8F;
+}
+
+div.ticket>section>.btn-buy {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    padding: 5px 10px;
+    margin-left: 20px;
+}
+
+@media screen and (max-width: 600px) {
+    div.date-table {
+        width: 90%;
+    }
+    div.ticket {
+        flex-direction: column;
+        margin: auto;
+    }
+    div.ticket>section,
+    img {
+        width: 90%;
+        display: block;
+        padding: 5px auto;
+        margin: 10px auto;
+        overflow-x: hidden;
+    }
+}
+
+footer {
+    margin: auto;
+    width: 600px;
+}
+
+footer>h1 {
+    text-align: center;
+    font-weight: lighter;
+    letter-spacing: 2px;
+}
+
+footer>h5 {
+    text-align: center;
+    color: #8F8F8F;
+    font-style: italic;
+    font-weight: lighter;
+    margin: 20px auto;
+    font-size: 14px;
+}
+
+.footer-contact {
+    float: left;
+    padding: auto;
+    display: block;
+}
+
+.contact-item {
+    margin: 10px 20px;
+}
+
+.footer-form {
+    float: right;
+    display: block;
+    width: 355px;
+}
+
+form>input.half {
+    display: inline-block;
+    width: 49%;
+    height: 30px;
+    border: 1px solid #8F8F8F;
+    border-radius: 5px;
+    margin: 10px auto;
+    padding-left: 20px;
+}
+
+form>input.full {
+    display: block;
+    width: 99%;
+    height: 30px;
+    border: 1px solid #8F8F8F;
+    border-radius: 5px;
+    margin: auto;
+    margin-top: 15px;
+    padding-left: 10px;
+}
+
+form>button {
+    font-weight: bold;
+    float: right;
+    margin-top: 15px;
+    /*margin-right: 0px;*/
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #8F8F8F;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.main-footer::after {
+    content: "";
+    clear: both;
+    display: table;
+    visibility: hidden;
+}
+
+@media screen and (max-width: 600px) {
+    footer {
+        width: auto;
+    }
+    .footer-contact {
+        display: block;
+        float: none;
+    }
+    .footer-form {
+        display: block;
+        float: none;
+        margin: auto;
+        width: auto;
+        padding: 5%;
+    }
+    form>input.half {
+        display: block;
+        width: 99%;
+    }
+}
+
+section.social {
+    margin-top: 30px; 
+    padding: 20px auto;
+    text-align: center;
+    color: #8F8F8F;
+    letter-spacing: 2px;
+    font-size: 18px;
+}

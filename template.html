@@ -8,9 +8,38 @@
     <link rel="stylesheet" type="text/css" href="css/template.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/template.js"></script>
+    <style>
+    /* Set the size of the div element that contains the map */
+
+    #map {
+        height: 400px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+    }
+    </style>
 </head>
 
 <body>
+    <script>
+    // Initialize and add the map
+    function initMap() {
+        // The location of Uluru
+        var uluru = { lat: -25.344, lng: 131.036 };
+        // The map, centered at Uluru
+        var map = new google.maps.Map(
+            document.getElementById('map'), { zoom: 4, center: uluru });
+        // The marker, positioned at Uluru
+        var marker = new google.maps.Marker({ position: uluru, map: map });
+    }
+    </script>
+    <!--Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+    * The callback parameter executes the initMap() function
+    -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaiD_Ufs5Ee32gIhEtSLvITciuOI_Z8DA&callback=initMap">
+    </script>
     <header>
         <nav>
             <div class="desktop-menu">
@@ -77,7 +106,76 @@
                 <p class="description">Description of the band</p>
             </section>
         </div>
+        <div class="sub-content">
+            <h1>TOUR DATES</h1>
+            <h5>Remember to book your tickets!</h5>
+            <div class="date-table">
+                <div class="table-row">
+                    <p>September </p>
+                    <div class="sold-out">Sold out</div>
+                </div>
+                <div class="table-row">
+                    <p>November </p>
+                    <div class="sold-out">Sold out</div>
+                </div>
+                <div class="table-row">
+                    <p>October </p>
+                    <div class="remainder">53</div>
+                </div>
+            </div>
+            <div class="ticket">
+                <section>
+                    <img src="images/ticket-1.jpg">
+                    <h4 class="name">New York</h4>
+                    <h4 class="date-time">Fri 27 Nov 2016</h4>
+                    <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
+                    <div class="btn-buy">Buy Ticket</div>
+                </section>
+                <section>
+                    <img src="images/ticket-2.jpg">
+                    <h4 class="name">Paris</h4>
+                    <h4 class="date-time">Fri 27 Nov 2016</h4>
+                    <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
+                    <div class="btn-buy">Buy Ticket</div>
+                </section>
+                <section>
+                    <img src="images/ticket-3.jpg">
+                    <h4 class="name">Paris</h4>
+                    <h4 class="date-time">Fri 27 Nov 2016</h4>
+                    <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
+                    <div class="btn-buy">Buy Ticket</div>
+                </section>
+            </div>
+        </div>
     </div>
+    <footer>
+        <h1>CONTACT</h1>
+        <h5>Fan? Drop a note!</h5>
+        <div class="main-footer">
+            <section class="footer-contact">
+                <div class="contact-item"><i class="fa fa-map-marker"></i> Chicago, US</div>
+                <div class="contact-item"><i class="fa fa-phone"></i> Phone: +00 151515</div>
+                <div class="contact-item"><i class="fa fa-envelope"></i> Email: mail@mail.com</div>
+            </section>
+            <section class="footer-form">
+                <form action="" target="_blank">
+                    <input class="half" type="text" name="name" placeholder="Name">
+                    <input class="half" type="text" name="email" placeholder="Email">
+                    <input class="full" type="text" name="message" placeholder="Message">
+                    <button type="submit">Send</button>
+                </form>
+            </section>
+        </div>
+    </footer>
+    <div id="map"></div>
+    <section class="social">
+        <i class="fa fa-facebook-official"></i>
+        <i class="fa fa-instagram "></i>
+        <i class="fa fa-snapchat  "></i>
+        <i class="fa fa-pinterest-p "></i>
+        <i class="fa fa-twitter"></i>
+        <i class="fa fa-linkedin "></i>
+    </section>
 </body>
 
 </html>
